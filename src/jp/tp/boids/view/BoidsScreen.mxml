@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx"
+		 addedToStage="addedToStageHandler(event)"
+		 >
+	<s:layout>
+		<s:VerticalLayout/>
+	</s:layout>
+	
+	<fx:Script>
+		<![CDATA[
+			import jp.tp.boids.BoidsFacade;
+			import jp.tp.boids.particle.*;
+			
+			import mx.events.ResizeEvent;
+			
+			import spark.components.Label;
+			import spark.primitives.BitmapImage;
+			
+			public static const MAX:Number = 1000;
+			public static const RANGE:Number = 50;//影響半径
+			public static const V_DIV:uint = Math.ceil(465 / RANGE); //横方向の分割数
+			public static const H_DIV:uint = Math.ceil(465 / RANGE); //縦方向の分割数
+			
+			private var map:Vector.<Vector.<Vector.<Particle>>>;
+			private var particles:Vector.<Particle>;
+			[Bindable]
+			public var bmd:BitmapData; 
+			
+			private var numParticles:uint;
+			private var color:ColorTransform;
+			private var count:int;
+			private var press:Boolean;
+			private var text:Label;			
+			protected function addedToStageHandler(event:Event):void
+			{
+				BoidsFacade.getInstance().registerMediator(new BoidsScreenMediator(this));
+			}
+		]]>
+	</fx:Script>
+	
+	<fx:Declarations>
+	</fx:Declarations>
+	<s:BitmapImage id="bmi" source="{bmd}" width="100%" height="100%" />
+		<!--
+	<s:BitmapImage source="{bmd}" width="300" height="300" smoothingQuality="high" />
+	-->
+</s:Group>
