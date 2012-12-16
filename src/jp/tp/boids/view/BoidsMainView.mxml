@@ -24,7 +24,7 @@
 	</fx:Script>
 	<fx:Declarations>
 	</fx:Declarations>
-	<view:BoidsScreen width="500" height="500" horizontalCenter="0" verticalCenter="0"/>
+	<view:BoidsScreen width="80%" height="80%" horizontalCenter="0" verticalCenter="0"/>
 	<util:StatsUI x="10" y="40" />
 	<s:Label x="10" y="10" text="{'particle count:' + numParticles.toString()}"/>
 </s:Group>
