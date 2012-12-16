@@ -6,6 +6,7 @@ package jp.tp.boids.view
 	import jp.tp.boids.constants.BoidsConst;
 	import jp.tp.boids.model.BoidsBmpProxy;
 	import jp.tp.boids.model.BoidsFrameProxy;
+	import jp.tp.boids.model.BoidsParticlesProxy;
 	import jp.tp.puremvc.ViewMediator;
 	
 	import org.puremvc.as3.interfaces.INotification;
@@ -22,7 +23,7 @@ package jp.tp.boids.view
 		private function onFrame(e:Event):void
 		{
 			sendNotification(BoidsConst.CALL_UPDATE_FRAME);
-			view.numParticles = BoidsFrameProxy.getInstance().numParticles;
+			view.numParticles = BoidsParticlesProxy.getInstance().list.length;
 		}
 		private function get view():BoidsMainView
 		{
