@@ -21,7 +21,8 @@ package jp.tp.boids.model
 		private var map:Vector.<Vector.<Vector.<Particle>>>;
 		private var particles:Vector.<Particle>;
 		
-		private var numParticles:uint;
+		[Bindable]
+		public var numParticles:uint;
 		private var color:ColorTransform;
 		private var count:int;
 		private var press:Boolean;
