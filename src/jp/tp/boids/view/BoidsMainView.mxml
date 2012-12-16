@@ -3,6 +3,7 @@
 		 xmlns:s="library://ns.adobe.com/flex/spark"
 		 xmlns:mx="library://ns.adobe.com/flex/mx"
 		 xmlns:view="jp.tp.boids.view.*"
+		 xmlns:util="jp.tp.util.*"
 		 creationComplete="init(event)"
 		 >
 	<s:layout>
@@ -22,4 +23,5 @@
 	<fx:Declarations>
 	</fx:Declarations>
 	<view:BoidsScreen width="80%" height="500" horizontalCenter="0" verticalCenter="0"/>
+	<util:StatsUI x="10" y="40" />
 </s:Group>
