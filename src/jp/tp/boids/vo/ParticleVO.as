@@ -20,8 +20,8 @@ package jp.tp.boids.vo
 			this.pos = pos;
 			this.vector = 
 					new Point(Math.random() - 0.5, Math.random() - 0.5),
-			this.maxDist = Math.random()*Math.random()* 50 + 12// maxDist;
-			this.minDist = Math.random()* 5 + 5;
+			this.maxDist = Math.random()*Math.random()*Math.random()*Math.random()* 100 + 25// maxDist;
+			this.minDist = Math.random()* Math.random()* 5 + 15;
 			createDisplay();
 		}
 

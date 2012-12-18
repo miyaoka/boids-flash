@@ -96,8 +96,8 @@ package jp.tp.boids.model
 			center.y /= targetList.length;
 			
 			var v:Point = vo.pos.subtract(center);
-			v.x *= 0.05 * 10;
-			v.y *= 0.05 * 10;
+			v.x *= 0.5;
+			v.y *= 0.5;
 			
 			return v;
 		}
@@ -114,8 +114,8 @@ package jp.tp.boids.model
 			center.x /= targetList.length;
 			center.y /= targetList.length;
 			var v:Point = center//.subtract(vo.vector);
-			v.x *= 0.01 * 10 * 2;
-			v.y *= 0.01 * 10 * 2;
+			v.x *= 1.5;
+			v.y *= 1.5;
 			return v;
 		}
 		private function cohesion(vo:ParticleVO, targetList:Vector.<ParticleVO>):Point
@@ -150,17 +150,17 @@ package jp.tp.boids.model
 			}
 			
 			var v:Point = center.subtract(vo.pos);
-			v.x *= 0.01 * 5;
-			v.y *= 0.01 * 5;
+			v.x *= 0.3;
+			v.y *= 0.3;
 			return v;
 		}
 		private function bounding(vo:ParticleVO, rect:Rectangle):Point
 		{
 			var v:Point = new Point();
-			if(rect.left > vo.pos.x) v.x += 2;
-			if(rect.right < vo.pos.x) v.x -= 2;
-			if(rect.top > vo.pos.y) v.y += 2;
-			if(rect.bottom < vo.pos.y) v.y -= 2;
+			if(rect.left > vo.pos.x) v.x += .1;
+			if(rect.right < vo.pos.x) v.x -= .1;
+			if(rect.top > vo.pos.y) v.y += .1;
+			if(rect.bottom < vo.pos.y) v.y -= .1;
 			
 			
 			return v;
