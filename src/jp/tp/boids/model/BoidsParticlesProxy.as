@@ -135,7 +135,7 @@ package jp.tp.boids.model
 				var shape:Shape = new Shape();
 				
 				with ( shape.graphics) {
-					lineStyle (null, 0x00ffff, 0.2);
+					lineStyle (1, 0x00ffff, 0.3);
 					drawCircle( 0, 0, vo.maxDist );
 					moveTo(-4, 0);
 					lineTo(4, 0);

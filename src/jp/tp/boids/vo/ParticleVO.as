@@ -40,14 +40,12 @@ package jp.tp.boids.vo
 		{
 			_display = new Shape();
 			with ( _display.graphics ) {
-				/*
-				lineStyle (1, 0x333333, .2);
+				lineStyle (null, 0xffffff, .1);
 				drawCircle( 0, 0, maxDist );
-				lineStyle (1, 0xffffff, .1);
+				lineStyle (null, 0xffffff, .1);
 				drawCircle( 0, 0, minDist );
-				*/
 				
-				lineStyle (null, 0xffffff, 1);
+				lineStyle (2, 0xffffff, 1);
 				moveTo(0,3);
 				lineTo(10,0);
 				lineTo(0,-3);
