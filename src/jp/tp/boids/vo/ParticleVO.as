@@ -10,6 +10,7 @@ package jp.tp.boids.vo
 		public var pos:Point;
 		public var maxDist:Number;
 		public var minDist:Number;
+		public var maxSpeed:Number = Math.random() * .1 + 1.0;
 		private var _display:Shape;
 		public function ParticleVO(
 			pos:Point, 

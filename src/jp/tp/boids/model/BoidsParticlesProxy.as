@@ -76,9 +76,9 @@ package jp.tp.boids.model
 				v.y *= 0.02;
 				v = v.add(bounding(p, rect));
 				p.vector = p.vector.add(v);
-				if( (Math.abs(p.vector.x) > 1) || (Math.abs(p.vector.y) > 1))
+				if( (Math.abs(p.vector.x) > p.maxSpeed) || (Math.abs(p.vector.y) > p.maxSpeed))
 				{
-					p.vector.normalize(1);
+					p.vector.normalize(p.maxSpeed);
 				}
 				p.pos = p.pos.add(p.vector);
 				p.display.x = p.pos.x;
