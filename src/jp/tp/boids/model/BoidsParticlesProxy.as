@@ -134,6 +134,25 @@ package jp.tp.boids.model
 			center.x /= targetList.length;
 			center.y /= targetList.length;
 			
+			if(targetList.length > 1)
+			{
+				var shape:Shape = new Shape();
+				
+				with ( shape.graphics) {
+					lineStyle (null, 0x00ffff, 0.2);
+					drawCircle( 0, 0, vo.maxDist );
+					moveTo(-4, 0);
+					lineTo(4, 0);
+					moveTo(0, 4);
+					lineTo(0, -4);
+				}		
+				var groups:UIComponent = BoidsStageProxy.getInstance().groups;
+				shape.x = center.x;
+				shape.y = center.y;
+				groups.addChild(shape);
+				
+			}
+			
 			var v:Point = center.subtract(vo.pos);
 			v.x *= 0.01 * 5;
 			v.y *= 0.01 * 5;
