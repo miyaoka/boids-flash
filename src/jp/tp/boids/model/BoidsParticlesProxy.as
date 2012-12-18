@@ -68,14 +68,13 @@ package jp.tp.boids.model
 //				p.vector.x *= 0.9;
 				var v:Point = separation(p,minList).add(
 					cohesion(p, maxList).add(
-						bounding(p, rect).add(
-							alignment(p, maxList)
-						)
+						alignment(p, maxList)
 					)
 				);// + bounding(p);
 //				v = alignment(p, maxList);
 				v.x *= 0.02;
 				v.y *= 0.02;
+				v = v.add(bounding(p, rect));
 				p.vector = p.vector.add(v);
 				if( (Math.abs(p.vector.x) > 1) || (Math.abs(p.vector.y) > 1))
 				{
