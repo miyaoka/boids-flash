@@ -39,16 +39,18 @@ package jp.tp.boids.vo
 		{
 			_display = new Shape();
 			with ( _display.graphics ) {
+				/*
 				lineStyle (1, 0x333333, .2);
 				drawCircle( 0, 0, maxDist );
-				lineStyle (1, 0xffffff, .2);
+				lineStyle (1, 0xffffff, .1);
 				drawCircle( 0, 0, minDist );
+				*/
 				
-				beginFill( 0xffffff, 0.3 );
-				lineStyle (1, 0xffffff, .9);
+				lineStyle (null, 0xffffff, 1);
 				moveTo(0,3);
 				lineTo(10,0);
 				lineTo(0,-3);
+				lineTo(0,3);
 			}
 		}
 	}
