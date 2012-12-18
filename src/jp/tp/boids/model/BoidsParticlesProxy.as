@@ -54,10 +54,11 @@ package jp.tp.boids.model
 				var minList:Vector.<ParticleVO> = new Vector.<ParticleVO>();
 				for each(var p2:ParticleVO in list)
 				{
-					if(p2 == p) continue;
 					var dist:Number = Point.distance(p2.pos, p.pos);
 					if(dist > p.maxDist) continue;
 					maxList.push(p2);
+					
+					if(p2 == p) continue;
 					if(dist > p.minDist) continue;
 					minList.push(p2);
 				}
