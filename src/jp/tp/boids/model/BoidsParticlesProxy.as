@@ -1,5 +1,6 @@
 package jp.tp.boids.model
 {
+	import flash.display.Shape;
 	import flash.geom.Point;
 	import flash.geom.Rectangle;
 	import flash.utils.getTimer;
@@ -7,6 +8,8 @@ package jp.tp.boids.model
 	import jp.tp.boids.BoidsFacade;
 	import jp.tp.boids.constants.BoidsConst;
 	import jp.tp.boids.vo.ParticleVO;
+	
+	import mx.core.UIComponent;
 	
 	import org.puremvc.as3.patterns.proxy.Proxy;
 
@@ -20,14 +23,24 @@ package jp.tp.boids.model
 		{
 			super(NAME);
 		}
-		public function addParticle(vo:ParticleVO):void 
+		public function addParticle():void 
 		{
-//			if( list.length >= MAX ) return;
+			var stage:UIComponent = BoidsStageProxy.getInstance().boids;
+			if(!stage) return;
+
+			var vo:ParticleVO = new ParticleVO(new Point(Math.random() * stage.width, Math.random() * stage.height));
 			list.push(vo);
+			stage.addChild(vo.display);
 		}
 		public function moveParticles():void 
 		{
-			var rect:Rectangle = BoidsBmpProxy.getInstance().bmd.rect;
+			var stage:UIComponent = BoidsStageProxy.getInstance().boids;
+			var groups:UIComponent = BoidsStageProxy.getInstance().groups;
+			if(!stage || !groups) return;
+			
+			groups.removeChildren();
+			
+			var rect:Rectangle = new Rectangle(0, 0, stage.width, stage.height);
 			var margin:Number = 40;
 			rect.left += margin;
 			rect.top += margin;
@@ -68,6 +81,9 @@ package jp.tp.boids.model
 					p.vector.normalize(1);
 				}
 				p.pos = p.pos.add(p.vector);
+				p.display.x = p.pos.x;
+				p.display.y = p.pos.y;
+				p.display.rotation = Math.atan2(p.vector.y, p.vector.x) * 180 / Math.PI;
 			}
 		}	
 		private function separation(vo:ParticleVO, targetList:Vector.<ParticleVO>):Point

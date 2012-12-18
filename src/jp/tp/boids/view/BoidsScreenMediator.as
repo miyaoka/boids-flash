@@ -23,9 +23,8 @@ package jp.tp.boids.view
 		
 		private function init():void
 		{
-			sendNotification(BoidsConst.CALL_RESIZE_BMP, new Point(view.bmi.width, view.bmi.height));
-//			sendNotification(BoidsConst.CALL_RESIZE_BMP, new Point(465, 465));
-			updateBmp();
+			sendNotification(BoidsConst.CALL_SET_BOIDS_STAGE, view.boids);
+			sendNotification(BoidsConst.CALL_SET_GROUPS_STAGE, view.groups);
 			
 			view.addEventListener(MouseEvent.MOUSE_DOWN, function(e:MouseEvent):void 
 			{ 
@@ -43,19 +42,10 @@ package jp.tp.boids.view
 			{
 				sendNotification(BoidsConst.CALL_SET_MOUSE_POINT, new Point(e.localX, e.localY));
 			});
-			view.addEventListener(Event.RESIZE, function(e:Event):void 
-			{
-				sendNotification(BoidsConst.CALL_RESIZE_BMP, new Point(view.bmi.width, view.bmi.height));
-			});
 			
-			view.stage.quality = "low";
 			view.doubleClickEnabled = true;
 		}
 		
-		private function updateBmp():void
-		{
-			view.bmd = BoidsBmpProxy.getInstance().bmd;
-		}
 		private function get view():BoidsScreen
 		{
 			return viewComponent as BoidsScreen;
@@ -63,7 +53,6 @@ package jp.tp.boids.view
 		override public function listNotificationInterests():Array
 		{
 			return [
-				BoidsConst.UPDATE_BMP
 			];
 		}
 		
@@ -71,9 +60,6 @@ package jp.tp.boids.view
 		{
 			switch (n.getName())
 			{
-				case BoidsConst.UPDATE_BMP:
-					updateBmp();
-					break;
 			}
 		}
 	}	

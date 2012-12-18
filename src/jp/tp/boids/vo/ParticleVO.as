@@ -10,7 +10,7 @@ package jp.tp.boids.vo
 		public var pos:Point;
 		public var maxDist:Number;
 		public var minDist:Number;
-		private var _bmp:Shape;
+		private var _display:Shape;
 		public function ParticleVO(
 			pos:Point, 
 			maxDist:Number = 50, 
@@ -21,12 +21,12 @@ package jp.tp.boids.vo
 					new Point(Math.random() - 0.5, Math.random() - 0.5),
 			this.maxDist = Math.random()*Math.random()* 50 + 12// maxDist;
 			this.minDist = Math.random()* 5 + 5;
-			createBmp();
+			createDisplay();
 		}
 
-		public function get bmp():Shape
+		public function get display():Shape
 		{
-			return _bmp;
+			return _display;
 		}
 		public function get matrix():Matrix
 		{
@@ -35,10 +35,10 @@ package jp.tp.boids.vo
 			mtx.translate(pos.x, pos.y);
 			return mtx;
 		}
-		private function createBmp():void
+		private function createDisplay():void
 		{
-			_bmp = new Shape();
-			with ( _bmp.graphics ) {
+			_display = new Shape();
+			with ( _display.graphics ) {
 				lineStyle (1, 0x333333, .2);
 				drawCircle( 0, 0, maxDist );
 				lineStyle (1, 0xffffff, .2);

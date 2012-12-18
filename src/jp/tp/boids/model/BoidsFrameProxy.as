@@ -1,6 +1,8 @@
 package jp.tp.boids.model
 {
 	import flash.display.BitmapData;
+	import flash.display.DisplayObject;
+	import flash.display.DisplayObjectContainer;
 	import flash.geom.ColorTransform;
 	import flash.geom.Matrix;
 	import flash.geom.Point;
@@ -8,6 +10,8 @@ package jp.tp.boids.model
 	import jp.tp.boids.BoidsFacade;
 	import jp.tp.boids.particle.*;
 	import jp.tp.boids.vo.ParticleVO;
+	
+	import mx.core.UIComponent;
 	
 	import org.puremvc.as3.patterns.proxy.Proxy;
 
@@ -43,24 +47,13 @@ package jp.tp.boids.model
 		
 		public function update():void
 		{
-			if(press1) BoidsParticlesProxy.getInstance().addParticle(new ParticleVO(new Point(Math.random()*500, Math.random()*500)));
+			var bpp:BoidsParticlesProxy = BoidsParticlesProxy.getInstance();
+			if(press1) bpp.addParticle();
 				//mousePt)); //addParticle(mousePt);
 //			if(press2) addShark(mousePt);
 			press2 = false;
 			
-			var bmd:BitmapData = BoidsBmpProxy.getInstance().bmd;
-			if(!bmd) return;
-			BoidsParticlesProxy.getInstance().moveParticles();
-			
-			bmd.lock();            
-			bmd.fillRect(bmd.rect, BoidsBmpProxy.getInstance().baseColor);
-			
-			var list:Vector.<ParticleVO> = BoidsParticlesProxy.getInstance().list;
-			for each(var p:ParticleVO in list)
-			{
-				bmd.draw(p.bmp, p.matrix);
-			}
-			bmd.unlock();
+			bpp.moveParticles();
 		}
 
 		
