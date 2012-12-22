@@ -7,7 +7,8 @@ package jp.tp.boids.model
 	
 	import jp.tp.boids.BoidsFacade;
 	import jp.tp.boids.constants.BoidsConst;
-	import jp.tp.boids.vo.ParticleVO;
+	import jp.tp.boids.vo.BulletVO;
+	import jp.tp.boids.vo.PersonVO;
 	
 	import mx.core.UIComponent;
 	
@@ -16,7 +17,10 @@ package jp.tp.boids.model
 	public class BoidsParticlesProxy extends Proxy
 	{
 		public static const NAME:String = "BoidsParticles";
-		public var list:Vector.<ParticleVO> = new Vector.<ParticleVO>();
+		public var persons:Vector.<PersonVO> = new Vector.<PersonVO>();
+		public var bullets:Vector.<BulletVO> = new Vector.<BulletVO>();
+		
+		private var count:int = 0;
 		
 		
 		public function BoidsParticlesProxy()
@@ -28,8 +32,10 @@ package jp.tp.boids.model
 			var stage:UIComponent = BoidsStageProxy.getInstance().boids;
 			if(!stage) return;
 
-			var vo:ParticleVO = new ParticleVO(new Point(Math.random() * stage.width, Math.random() * stage.height));
-			list.push(vo);
+			var vo:PersonVO = new PersonVO(new Point(Math.random() * stage.width, Math.random() * stage.height));
+			persons.push(vo);
+			vo.display.x = vo.pos.x;
+			vo.display.y = vo.pos.y;
 			stage.addChild(vo.display);
 		}
 		public function moveParticles():void 
@@ -38,57 +44,133 @@ package jp.tp.boids.model
 			var groups:UIComponent = BoidsStageProxy.getInstance().groups;
 			if(!stage || !groups) return;
 			
-			groups.removeChildren();
 			
 			var rect:Rectangle = new Rectangle(0, 0, stage.width, stage.height);
-			var margin:Number = 40;
+			var margin:Number = 80;
 			rect.left += margin;
 			rect.top += margin;
 			rect.right -= margin;
 			rect.bottom -= margin;
 			var timer:int;
-			
-			for each(var p:ParticleVO in list)
+			count = (++count) % 5;
+			if(count==0) 
 			{
-				var maxList:Vector.<ParticleVO> = new Vector.<ParticleVO>();
-				var minList:Vector.<ParticleVO> = new Vector.<ParticleVO>();
-				for each(var p2:ParticleVO in list)
+				groups.removeChildren();
+				groups.alpha = 1.0;
+			}
+			else
+			{
+				groups.alpha *= 0.97;
+			}
+			
+			moveBullets();
+			
+			for each(var p:PersonVO in persons)
+			{
+				if(count==0)
 				{
-					var dist:Number = Point.distance(p2.pos, p.pos);
-					if(dist > p.maxDist) continue;
-					maxList.push(p2);
+					var cohesionList:Vector.<PersonVO> = new Vector.<PersonVO>();
+					var separationDist:Vector.<PersonVO> = new Vector.<PersonVO>();
+					var shootDist:Vector.<PersonVO> = new Vector.<PersonVO>();
+					for each(var p2:PersonVO in persons)
+					{
+						var dist:Number;
+						dist = Point.distance(p2.pos, p.pos);
+						if(p2.type != p.type)
+						{
+							if(dist > p.shootDist) continue;
+							shootDist.push(p2);
+						}
+						if(dist < p.cohesionDist) cohesionList.push(p2);
+						
+						if(p2 == p) continue;
+						if(dist > p.separationDist) continue;
+						separationDist.push(p2);
+					}
 					
-					if(p2 == p) continue;
-					if(dist > p.minDist) continue;
-					minList.push(p2);
-				}
-				
-				var v:Point = separation(p,minList).add(
-					cohesion(p, maxList).add(
-						alignment(p, maxList)
-					)
-				);
-				v.x *= 0.02;
-				v.y *= 0.02;
-				v = v.add(bounding(p, rect));
-				p.vector = p.vector.add(v);
-				
-				if( (Math.abs(p.vector.x) > p.maxSpeed) || (Math.abs(p.vector.y) > p.maxSpeed))
-				{
-					p.vector.normalize(p.maxSpeed);
+					var v:Point = separation(p,separationDist).add(
+						cohesion(p, cohesionList).add(
+							alignment(p, cohesionList)
+						)
+					);
+					shoot(p, shootDist);
+					
+					v.x *= 0.02;
+					v.y *= 0.02;
+					v = v.add(bounding(p, rect));
+					p.vector = p.vector.add(v);
+					
+					if( (Math.abs(p.vector.x) > p.maxSpeed) || (Math.abs(p.vector.y) > p.maxSpeed))
+					{
+						p.vector.normalize(p.maxSpeed);
+					}
 				}
 				p.pos = p.pos.add(p.vector);
 				p.display.x = p.pos.x;
 				p.display.y = p.pos.y;
 				p.display.rotation = Math.atan2(p.vector.y, p.vector.x) * 180 / Math.PI;
 			}
-		}	
-		private function separation(vo:ParticleVO, targetList:Vector.<ParticleVO>):Point
+
+		}
+		private function moveBullets():void
+		{
+			var stage:UIComponent = BoidsStageProxy.getInstance().boids;
+			if(!stage) return;			
+			l: for (var i:int = 0; i < bullets.length; i++)
+			{
+				var b:BulletVO = bullets[i];
+				b.pos = b.pos.add(b.vector);
+				b.display.x = b.pos.x;
+				b.display.y = b.pos.y;
+				b.display.rotation = Math.atan2(b.vector.y, b.vector.x) * 180 / Math.PI;
+
+				for (var j:int = 0; j < persons.length; j++)
+				{
+					var p:PersonVO = persons[j];
+					if(p.type != b.type && Point.distance(b.pos, p.pos) < 6)
+					{
+						p.life = (p.type != b.type) ? p.life -1 : p.life - 0.2;
+						p.display.scaleX *= 0.98;
+						p.display.scaleY *= 0.95;
+//						p.cohesionDist *= 0.9;
+//						p.separationDist *= 0.9;
+//						p.shootDist *= 0.9;
+//						p.maxSpeed *= 0.95;
+						
+						p.pos.x += b.vector.x * (Math.random()*2 + 2.0);
+						p.pos.y += b.vector.y * (Math.random()*2 + 2.0);
+						p.vector.x += b.vector.x * (Math.random() * 0.05 + 0.05);
+						p.vector.y += b.vector.y * (Math.random() * 0.05 + 0.05);
+						
+						p.vector.normalize(p.maxSpeed);
+						
+						stage.removeChild(b.display);				
+						bullets.splice(i,1);
+						i--;
+						
+						if(p.life < 0)
+						{
+							stage.removeChild(p.display);
+							persons.splice(j,1);
+							j--;
+						}
+						continue l;
+					}
+				}
+				if(--b.life < 0)
+				{
+					stage.removeChild(b.display);				
+					bullets.splice(i,1);
+					i--;
+				}
+			}			
+		}
+		private function separation(vo:PersonVO, targetList:Vector.<PersonVO>):Point
 		{
 			if(targetList.length < 1) return new Point();
 
 			var center:Point = new Point();
-			for each(var p:ParticleVO in targetList)
+			for each(var p:PersonVO in targetList)
 			{
 				center = center.add(p.pos);
 			}
@@ -96,65 +178,87 @@ package jp.tp.boids.model
 			center.y /= targetList.length;
 			
 			var v:Point = vo.pos.subtract(center);
-			v.x *= 0.5;
-			v.y *= 0.5;
+			v.x *= 0.7;
+			v.y *= 0.7;
 			
 			return v;
 		}
-		private function alignment(vo:ParticleVO, targetList:Vector.<ParticleVO>):Point
+		private function alignment(vo:PersonVO, targetList:Vector.<PersonVO>):Point
 		{
 			var timer:int = getTimer();
 			if(targetList.length < 1) return new Point();
 			
 			var center:Point = new Point();
-			for each(var p:ParticleVO in targetList)
+			for each(var p:PersonVO in targetList)
 			{
 				center = center.add(p.vector);
 			}
 			center.x /= targetList.length;
 			center.y /= targetList.length;
 			var v:Point = center//.subtract(vo.vector);
-			v.x *= 1.5;
-			v.y *= 1.5;
+			v.x *= 2.5;
+			v.y *= 2.5;
 			return v;
 		}
-		private function cohesion(vo:ParticleVO, targetList:Vector.<ParticleVO>):Point
+		private function cohesion(vo:PersonVO, targetList:Vector.<PersonVO>):Point
 		{
 			if(targetList.length < 1) return new Point();
 			
-			var center:Point = new Point();
-			for each(var p:ParticleVO in targetList)
+			var friendCenter:Point = new Point();
+			var enemyCenter:Point = new Point();
+			var friends:Number = 0;
+			var enemys:Number = 0;
+			for each(var p:PersonVO in targetList)
 			{
-				center = center.add(p.pos);
-			}
-			center.x /= targetList.length;
-			center.y /= targetList.length;
-			
-			if(targetList.length > 1)
-			{
-				var shape:Shape = new Shape();
-				
-				with ( shape.graphics) {
-					lineStyle (1, 0x00ffff, 0.3);
-					drawCircle( 0, 0, vo.maxDist );
-					moveTo(-4, 0);
-					lineTo(4, 0);
-					moveTo(0, 4);
-					lineTo(0, -4);
-				}		
-				var groups:UIComponent = BoidsStageProxy.getInstance().groups;
-				shape.x = center.x;
-				shape.y = center.y;
-				groups.addChild(shape);
-				
+				if(p.type == vo.type)
+				{
+					friendCenter = friendCenter.add(p.pos);
+					friends++;
+				}
+				else
+				{
+					enemyCenter = enemyCenter.add(p.pos);
+					enemys++;
+				}
 			}
 			
-			var v:Point = center.subtract(vo.pos);
+			
+			if(friends > 0)
+			{
+				friendCenter.x /= friends;
+				friendCenter.y /= friends;
+				
+				if(friends > 1)
+				{
+					var shape:Shape = new Shape();
+									
+					with ( shape.graphics) {
+						lineStyle (1, vo.color, 0.2);
+						drawCircle( 0, 0, vo.cohesionDist );
+						moveTo(-4, 0);
+						lineTo(4, 0);
+						moveTo(0, 4);
+						lineTo(0, -4);
+					}		
+					var groups:UIComponent = BoidsStageProxy.getInstance().groups;
+					shape.x = friendCenter.x;
+					shape.y = friendCenter.y;
+					groups.addChild(shape);
+				}
+			}
+			if(enemys > 0)
+			{
+				enemyCenter.x /= enemys;
+				enemyCenter.y /= enemys;
+			}			
+			var v:Point = friendCenter.subtract(vo.pos);
+			if(enemys > 0) v = v.add(vo.pos.subtract(enemyCenter));
+			
 			v.x *= 0.3;
 			v.y *= 0.3;
 			return v;
 		}
-		private function bounding(vo:ParticleVO, rect:Rectangle):Point
+		private function bounding(vo:PersonVO, rect:Rectangle):Point
 		{
 			var v:Point = new Point();
 			if(rect.left > vo.pos.x) v.x += .1;
@@ -165,6 +269,42 @@ package jp.tp.boids.model
 			
 			return v;
 		}		
+		private function shoot(vo:PersonVO, targetList:Vector.<PersonVO>):void
+		{
+			if(targetList.length < 1) return;
+			vo.heat = --vo.heat < 0 ? 0 : vo.heat;
+			if(vo.heat > 100) return;
+			
+			var minRot:Number;
+			for each(var p:PersonVO in targetList)
+			{
+				//-2PI ~ 2PI -> 0 ~ 2PI
+				var rotDiff:Number = Math.abs(Math.atan2(p.pos.y - vo.pos.y, p.pos.x - vo.pos.x) - Math.atan2(vo.vector.y, vo.vector.x));
+				//0 ~ 2PI -> 0 ~ PI
+				if(rotDiff > Math.PI) rotDiff = Math.abs((rotDiff - Math.PI * 2));
+				
+				minRot = !minRot ? rotDiff : (rotDiff < minRot ? rotDiff : minRot);
+			}			
+			
+			if(minRot > Math.PI * 0.1) 
+			{
+				vo.heat *= 0.9;
+
+				return;
+			}
+			var stage:UIComponent = BoidsStageProxy.getInstance().boids;
+			if(!stage) return;
+			
+			var b:BulletVO = new BulletVO(vo.pos.clone(), vo.type);
+			b.vector = vo.vector.clone();
+			b.vector.normalize(3.0);
+			bullets.push(b);
+			b.display.x = b.pos.x;
+			b.display.y = b.pos.y;
+			stage.addChild(b.display);
+			
+			vo.heat+=30;
+		}
 
 
 		public static function getInstance():BoidsParticlesProxy

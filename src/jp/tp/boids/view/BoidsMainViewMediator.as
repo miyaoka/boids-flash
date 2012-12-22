@@ -23,7 +23,7 @@ package jp.tp.boids.view
 		private function onFrame(e:Event):void
 		{
 			sendNotification(BoidsConst.CALL_UPDATE_FRAME);
-			view.numParticles = BoidsParticlesProxy.getInstance().list.length;
+			view.numParticles = BoidsParticlesProxy.getInstance().persons.length;
 		}
 		private function get view():BoidsMainView
 		{

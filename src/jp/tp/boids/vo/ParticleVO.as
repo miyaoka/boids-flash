@@ -8,20 +8,13 @@ package jp.tp.boids.vo
 	{
 		public var vector:Point;
 		public var pos:Point;
-		public var maxDist:Number;
-		public var minDist:Number;
-		public var maxSpeed:Number = Math.random() * .1 + 1.0;
-		private var _display:Shape;
-		public function ParticleVO(
-			pos:Point, 
-			maxDist:Number = 50, 
-			minDist:Number = 20)
+		public var maxSpeed:Number = Math.random() * 0.5 + 0.5;
+		public var life:Number = 0;
+		public var type:int = 0;
+		protected var _display:Shape;
+		public function ParticleVO(pos:Point)
 		{
 			this.pos = pos;
-			this.vector = 
-					new Point(Math.random() - 0.5, Math.random() - 0.5),
-			this.maxDist = Math.random()*Math.random()*Math.random()*Math.random()* 100 + 25// maxDist;
-			this.minDist = Math.random()* Math.random()* 5 + 15;
 			createDisplay();
 		}
 
@@ -29,14 +22,27 @@ package jp.tp.boids.vo
 		{
 			return _display;
 		}
-		public function get matrix():Matrix
+		public function get color():uint
 		{
-			var mtx:Matrix = new Matrix();
-			mtx.rotate(Math.atan2(vector.y, vector.x));
-			mtx.translate(pos.x, pos.y);
-			return mtx;
+			var color:uint;
+			switch(type)
+			{
+				case 0:
+					color = 0xffffff;
+					break;
+				case 1:
+					color = 0xff0000;
+					break;
+				case 2:
+					color = 0x00ff00;
+					break;
+				case 3:
+					color = 0x0000ff;
+					break;
+			}			
+			return color;
 		}
-		private function createDisplay():void
+		protected function createDisplay():void
 		{
 			_display = new Shape();
 			with ( _display.graphics ) {
@@ -45,7 +51,7 @@ package jp.tp.boids.vo
 				lineStyle (null, 0xffffff, .1);
 				drawCircle( 0, 0, minDist );
 				
-				lineStyle (2, 0xffffff, 1);
+				lineStyle (2, color, 1);
 				moveTo(0,3);
 				lineTo(10,0);
 				lineTo(0,-3);

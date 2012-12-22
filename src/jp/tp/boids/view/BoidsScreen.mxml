@@ -34,7 +34,7 @@
 			private var text:Label;			
 			protected function addedToStageHandler(event:Event):void
 			{
-//				stage.quality = StageQuality.LOW;
+				stage.quality = StageQuality.LOW;
 				BoidsFacade.getInstance().registerMediator(new BoidsScreenMediator(this));
 			}
 		]]>
@@ -63,6 +63,6 @@
 			</s:LinearGradient>
 		</s:fill>
 	</s:Rect>
-	<mx:UIComponent width="100%" height="100%" id="groups"/>
+	<mx:UIComponent width="100%" height="100%" id="groups" />
 	<mx:UIComponent width="100%" height="100%" id="boids"/>
 </s:Group>
