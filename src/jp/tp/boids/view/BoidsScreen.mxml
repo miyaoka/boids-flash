@@ -5,9 +5,8 @@
 		 addedToStage="addedToStageHandler(event)"
 		 >
 	<s:layout>
-		<s:VerticalLayout/>
+		<s:BasicLayout/>
 	</s:layout>
-	
 	<fx:Script>
 		<![CDATA[
 			import jp.tp.boids.BoidsFacade;
@@ -35,6 +34,7 @@
 			private var text:Label;			
 			protected function addedToStageHandler(event:Event):void
 			{
+				stage.quality = StageQuality.LOW;
 				BoidsFacade.getInstance().registerMediator(new BoidsScreenMediator(this));
 			}
 		]]>
@@ -42,8 +42,27 @@
 	
 	<fx:Declarations>
 	</fx:Declarations>
-	<s:BitmapImage id="bmi" source="{bmd}" width="100%" height="100%" />
-		<!--
-	<s:BitmapImage source="{bmd}" width="300" height="300" smoothingQuality="high" />
-	-->
+	<s:Rect width="100%" height="100%">
+		<s:fill>
+			<s:LinearGradient>
+				<s:rotation>90</s:rotation>
+				<s:entries>
+					<s:GradientEntry>
+						<s:color>0x66ccff</s:color>
+						<s:ratio>0.0</s:ratio>
+					</s:GradientEntry>
+					<s:GradientEntry>
+						<s:color>0x0066cc</s:color>
+						<s:ratio>0.5</s:ratio>
+					</s:GradientEntry>
+					<s:GradientEntry>
+						<s:color>0x003366</s:color>
+						<s:ratio>1.0</s:ratio>
+					</s:GradientEntry>
+				</s:entries>
+			</s:LinearGradient>
+		</s:fill>
+	</s:Rect>
+	<mx:UIComponent width="100%" height="100%" id="groups" />
+	<mx:UIComponent width="100%" height="100%" id="boids"/>
 </s:Group>

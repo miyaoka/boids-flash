@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:UIComponent xmlns:fx="http://ns.adobe.com/mxml/2009" 
+				xmlns:s="library://ns.adobe.com/flex/spark" 
+				xmlns:mx="library://ns.adobe.com/flex/mx"
+				addedToStage="addedToStageHandler(event)"
+				removedFromStage="removedFromStageHandler(event)"
+				>
+	<fx:Script>
+		<![CDATA[
+			import mx.events.FlexEvent;
+			
+			import net.hires.debug.Stats;
+			
+			private var mouseDownX:Number;
+			private var mouseDownY:Number;
+			private var stats:Stats;
+			
+			protected function addedToStageHandler(event:Event):void
+			{
+				stats = new Stats();
+				addChild(stats);
+				addEventListener(MouseEvent.MOUSE_DOWN, onMouseDown);
+				stage.addEventListener(MouseEvent.MOUSE_UP, onMouseUp);
+			}
+			protected function removedFromStageHandler(event:Event):void
+			{
+				removeChild(stats);
+				removeEventListener(MouseEvent.MOUSE_DOWN, onMouseDown);
+				stage.removeEventListener(MouseEvent.MOUSE_UP, onMouseUp);
+				stage.removeEventListener(MouseEvent.MOUSE_MOVE, onMouseMove);
+			}
+			private function onMouseDown(e:MouseEvent):void
+			{
+				mouseDownX = e.localX;
+				mouseDownY = e.localY;
+				stage.addEventListener(MouseEvent.MOUSE_MOVE, onMouseMove);
+			}
+			private function onMouseUp(e:MouseEvent):void
+			{
+				stage.removeEventListener(MouseEvent.MOUSE_MOVE, onMouseMove);
+			}
+			private function onMouseMove(e:MouseEvent):void
+			{
+				x = e.stageX - mouseDownX;
+				y = e.stageY - mouseDownY;
+			}
+		]]>
+	</fx:Script>
+	<fx:Declarations>
+		<!-- 非ビジュアルエレメント (サービス、値オブジェクトなど) をここに配置 -->
+	</fx:Declarations>
+</mx:UIComponent>

@@ -21,6 +21,8 @@ package jp.tp.boids.controller
 			facade.registerCommand(BoidsConst.CALL_SET_MOUSE_POINT, FrameCommand);
 			
 			facade.registerCommand(BoidsConst.CALL_RESIZE_BMP, BmpCommand);
+			facade.registerCommand(BoidsConst.CALL_SET_BOIDS_STAGE, StageCommand);
+			facade.registerCommand(BoidsConst.CALL_SET_GROUPS_STAGE, StageCommand);
 			
 		}
 
